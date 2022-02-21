@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.android.saveo.models.MoviesModel" />
+
+        <variable
+            name="actionItemListener"
+            type="com.android.saveo.utils.OnItemClickListener" />
+
+        <variable
+            name="position"
+            type="Integer" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{()->actionItemListener.onItemClicked(position)}"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="2dp">
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageView3"
+            imageUrl="@{model.download_url}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="shared_element_container"
+            app:layout_constraintBottom_toTopOf="@+id/line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.cardview.widget.CardView>
+</layout>
