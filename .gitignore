@@ -14,3 +14,4 @@
 .cxx
 local.properties
 gradle.properties
+app/schemas/com.android.saveo.data.local.ShoppingItemDb/1.json
