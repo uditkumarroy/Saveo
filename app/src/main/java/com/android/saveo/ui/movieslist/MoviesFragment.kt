@@ -7,9 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.android.saveo.databinding.FragmentMoviesBinding
 import com.android.saveo.models.MoviesModel
+import com.android.saveo.ui.details.DetailsFragmentDirections
 import com.android.saveo.utils.CustomAdapter
 import com.android.saveo.utils.OnItemClickListener
 import com.android.saveo.utils.SpacesItemDecoration
@@ -88,7 +90,8 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
     }
 
     override fun onItemClicked(position: Int, item: MoviesModel) {
-
+        val action = DetailsFragmentDirections.goToDetailsFragment(item)
+        binding.root.findNavController().navigate(action)
     }
 
 }
