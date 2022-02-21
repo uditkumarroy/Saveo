@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.android.saveo.databinding.FragmentMoviesBinding
 import com.android.saveo.models.MoviesModel
 import com.android.saveo.ui.details.DetailsFragmentDirections
@@ -58,15 +59,15 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
                    }
                    is MoviesStateEvent.MoviesSuccess ->{
                        Timber.e(uiState.data.toString())
-                       list = uiState.data.toMutableList()
+                       list = uiState.data.map { movies->
+                           MoviesItemView(movies)
+                       }.toMutableList()
                        customAdapter.setList(list)
+                       listPager = uiState.data.take(5).map {pager->
+                           MoviesAdapterItemView(pager)
+                       }.toMutableList()
+                        customAdapterPager.setList(listPager)
                    }
-                   is MoviesStateEvent.MoviesAdapterSuccess ->{
-                       Timber.e(uiState.data.toString())
-                       listPager = uiState.data.toMutableList()
-                       customAdapterPager.setList(list)
-                   }
-
                    else -> {
                        Timber.e("Nothing Called")
                    }
@@ -77,7 +78,9 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
 
     override fun onResume() {
         super.onResume()
-        viewModel.getMoviesListData(1,15)
+        if (viewModel.uiState.equals( MoviesStateEvent.Empty)) {
+            viewModel.getMoviesListData(1, 15)
+        }
         customAdapter = CustomAdapter(list.toMutableList(),this)
         binding.rcvGrid.layoutManager =
             GridLayoutManager(requireContext(), 3)
@@ -90,7 +93,8 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
             }
         })
         customAdapterPager = CustomAdapter(listPager.toMutableList(),this)
-       // binding.viewPager2.adapter = customAdapterPager
+        binding.viewPager2.adapter = customAdapterPager
+        binding.viewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
     }
 
     override fun onItemClicked(position: Int) {
