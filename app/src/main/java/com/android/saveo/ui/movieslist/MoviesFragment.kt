@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -31,6 +32,7 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
     private lateinit var customAdapterPager: CustomAdapter<ViewType<*>>
     private var list = mutableListOf<ViewType<*>>()
     private var listPager = mutableListOf<ViewType<*>>()
+    private var count = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,6 +83,12 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
             GridLayoutManager(requireContext(), 3)
         binding.rcvGrid.addItemDecoration(SpacesItemDecoration(20))
         binding.rcvGrid.adapter = customAdapter
+        binding.nestScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { v, _, scrollY, _, _ ->
+            if (scrollY == v!!.getChildAt(0).height - v.height) {
+                count++
+                viewModel.getMoviesListData(count,15)
+            }
+        })
         customAdapterPager = CustomAdapter(listPager.toMutableList(),this)
        // binding.viewPager2.adapter = customAdapterPager
     }
