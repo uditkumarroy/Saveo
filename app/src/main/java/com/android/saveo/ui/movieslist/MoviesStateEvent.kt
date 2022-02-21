@@ -4,6 +4,7 @@ import com.android.saveo.utils.DataState
 
 sealed class MoviesStateEvent {
     data class MoviesSuccess(val data: List<MoviesItemView>) : MoviesStateEvent()
+    data class MoviesAdapterSuccess(val data: List<MoviesAdapterItemView>) : MoviesStateEvent()
     data class Error(val data: DataState.Error) : MoviesStateEvent()
     object ShowProgress : MoviesStateEvent()
     object HideProgress : MoviesStateEvent()

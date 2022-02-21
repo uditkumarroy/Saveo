@@ -4,9 +4,6 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MoviesApiClient {
-    @GET("/list")
+    @GET("/v2/list")
     suspend fun getMovies(@Query("page") page:Int, @Query("limit") limit:Int): MoviesRemoteEntity
-
-    @GET("/list")
-    suspend fun getMovies(): MoviesRemoteEntity
 }
