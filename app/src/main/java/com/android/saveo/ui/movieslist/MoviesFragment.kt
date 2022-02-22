@@ -1,16 +1,20 @@
 package com.android.saveo.ui.movieslist
 
+import android.gesture.GestureOverlayView.ORIENTATION_HORIZONTAL
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.android.saveo.R
 import com.android.saveo.databinding.FragmentMoviesBinding
 import com.android.saveo.models.MoviesModel
 import com.android.saveo.ui.details.DetailsFragmentDirections
@@ -78,7 +82,7 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
 
     override fun onResume() {
         super.onResume()
-        if (viewModel.uiState.equals( MoviesStateEvent.Empty)) {
+        if (viewModel.uiState.value == MoviesStateEvent.Empty) {
             viewModel.getMoviesListData(1, 15)
         }
         customAdapter = CustomAdapter(list.toMutableList(),this)
@@ -94,7 +98,29 @@ class MoviesFragment : Fragment(), OnItemClickListener<MoviesModel> {
         })
         customAdapterPager = CustomAdapter(listPager.toMutableList(),this)
         binding.viewPager2.adapter = customAdapterPager
-        binding.viewPager2.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+        with(binding.viewPager2) {
+            clipToPadding = false
+            clipChildren = false
+            offscreenPageLimit = 3
+        }
+        binding.viewPager2.clipToPadding = false;
+        binding.viewPager2.setPadding(48, 0, 48, 0);
+        //binding.viewPager2.ma(24);
+        val pageMarginPx = resources.getDimensionPixelOffset(R.dimen.pageMargin)
+        val offsetPx = resources.getDimensionPixelOffset(R.dimen.offset)
+        binding.viewPager2.setPageTransformer { page, position ->
+            val viewPager = page.parent.parent as ViewPager2
+            val offset = position * -(2 * offsetPx + pageMarginPx)
+            if (viewPager.orientation == ORIENTATION_HORIZONTAL) {
+                if (ViewCompat.getLayoutDirection(viewPager) == ViewCompat.LAYOUT_DIRECTION_RTL) {
+                    page.translationX = -offset
+                } else {
+                    page.translationX = offset
+                }
+            } else {
+                page.translationY = offset
+            }
+        }
     }
 
     override fun onItemClicked(position: Int) {
